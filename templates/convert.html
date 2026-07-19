@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Image Converter - PixResize{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="tool-card">
+        <nav class="breadcrumbs">
+            <a href="{{ url_for('index') }}">HOME</a>
+            <span class="sep">&gt;</span>
+            <a href="#">IMAGE TOOLS</a>
+            <span class="sep">&gt;</span>
+            <span class="current">IMAGE CONVERTER</span>
+        </nav>
+
+        <div class="tool-badge"><span class="badge-dot"></span> TOOL</div>
+        <h1 class="tool-title">Image Converter</h1>
+        <p class="tool-desc">Convert images to JPG, PNG, WebP and more with a single upload.</p>
+
+        <div class="feature-grid">
+            <a class="feature-card" href="#">HEIC to JPG</a>
+            <a class="feature-card" href="#">WebP to PNG</a>
+            <a class="feature-card" href="#">PNG to JPG</a>
+            <a class="feature-card" href="#">JPG to WebP</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Signup - PixResize{% endblock %}
+{% block content %}
+<section class="auth-panel">
+    <h2>Signup</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+            <p class="auth-msg">{{ msg }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form class="auth-form" method="POST" action="{{ url_for('signup_page') }}">
+        <label>Name</label>
+        <input type="text" name="name" class="auth-input">
+        <label>Email</label>
+        <input type="email" name="email" class="auth-input">
+        <button type="submit" class="auth-button">Signup</button>
+    </form>
+</section>
+{% endblock %}

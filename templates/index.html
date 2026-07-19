@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Image Resizer - PixResize{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="tool-card">
+        <nav class="breadcrumbs">
+            <a href="{{ url_for('index') }}">HOME</a>
+            <span class="sep">&gt;</span>
+            <a href="#">IMAGE TOOLS</a>
+            <span class="sep">&gt;</span>
+            <span class="current">IMAGE RESIZER</span>
+        </nav>
+
+        <div class="tool-badge"><span class="badge-dot"></span> TOOL</div>
+        <h1 class="tool-title">Image Resizer</h1>
+        <p class="tool-desc">Resize by exact size, percentage, or social presets. Export with target KB/MB.</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form id="resize-form" action="{{ url_for('resize') }}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="mode" id="mode" value="{{ defaults.mode }}">
+
+            <div class="upload-zone" id="upload-zone">
+                <input type="file" id="file-input" name="file" accept="image/*" hidden>
+                <div class="upload-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-title">Select files</p>
+                <p class="upload-subtitle">or drop files here · Max {{ 16 }} MB</p>
+                <p class="file-name" id="file-name"></p>
+            </div>
+
+            <div class="settings-panel" id="resize-options" hidden>
+                <!-- Resize Settings -->
+                <div class="settings-block">
+                    <h3 class="settings-heading">Resize Settings</h3>
+
+                    <div class="mode-tabs" role="tablist">
+                        <button type="button" class="mode-tab active" data-mode="size">By Size</button>
+                        <button type="button" class="mode-tab" data-mode="percent">As Percentage</button>
+                        <button type="button" class="mode-tab" data-mode="social">Social Media</button>
+                    </div>
+
+                    <!-- By Size -->
+                    <div class="mode-panel" id="panel-size" data-panel="size">
+                        <div class="dim-row">
+                            <div class="field">
+                                <label for="width">Width</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="width" name="width" value="{{ defaults.width }}" min="1" max="10000" placeholder="Enter Width">
+                                    <span class="unit-tag">px</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="height">Height</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="height" name="height" value="{{ defaults.height }}" min="1" max="10000" placeholder="Enter Height">
+                                    <span class="unit-tag">px</span>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="check-row">
+                            <input type="checkbox" id="lock_aspect" name="lock_aspect" {% if defaults.lock_aspect %}checked{% endif %}>
+                            <span>Lock Aspect Ratio</span>
+                        </label>
+                    </div>
+
+                    <!-- As Percentage -->
+                    <div class="mode-panel" id="panel-percent" data-panel="percent" hidden>
+                        <div class="percent-row">
+                            <label for="percent">Size</label>
+                            <div class="percent-slider-wrap">
+                                <input type="range" id="percent" name="percent" min="1" max="500" value="{{ defaults.percent }}" class="range-input">
+                                <strong id="percent-label">{{ defaults.percent }}%</strong>
+                            </div>
+                            <p class="percent-hint" id="percent-hint">Make my image {{ defaults.percent }}% of original size.</p>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    <div class="mode-panel" id="panel-social" data-panel="social" hidden>
+                        <div class="social-grid">
+                            {% for label, w, h in social_presets %}
+                            <button type="button" class="social-card" data-w="{{ w }}" data-h="{{ h }}">
+                                <span class="social-name">{{ label }}</span>
+                                <span class="social-size">{{ w }} × {{ h }}</span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                        <p class="hint-text" id="social-picked">Pick a preset to set width &amp; height.</p>
+                    </div>
+                </div>
+
+                <!-- Export Settings (collapsible) -->
+                <div class="settings-block export-block">
+                    <button type="button" class="export-toggle" id="export-toggle" aria-expanded="true">
+                        <span>Export Settings</span>
+                        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+
+                    <div class="export-body" id="export-body">
+                        <div class="field">
+                            <label for="target_size">Target File Size <span class="optional">(optional)</span></label>
+                            <div class="input-with-select">
+                                <input type="number" id="target_size" name="target_size" min="0.01" step="any" placeholder="e.g. 200">
+                                <select id="target_unit" name="target_unit">
+                                    <option value="KB" selected>KB</option>
+                                    <option value="MB">MB</option>
+                                </select>
+                            </div>
+                            <p class="hint-text">Set a max output file size. Best results with JPG / WebP.</p>
+                        </div>
+
+                        <div class="field">
+                            <label for="export_format">Save Image As</label>
+                            <select id="export_format" name="export_format" class="full-select">
+                                <option value="original" selected>Original</option>
+                                <option value="jpg">JPG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-resize">Resize &amp; Download</button>
+            </div>
+        </form>
+
+        <div class="preview-section" id="preview-section" hidden>
+            <h3>Preview <span class="preview-meta" id="preview-meta"></span></h3>
+            <img id="preview-image" src="" alt="Preview">
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/resize.js') }}"></script>
+{% endblock %}

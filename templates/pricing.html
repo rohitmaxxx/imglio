@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Pricing - PixResize{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="tool-card">
+        <nav class="breadcrumbs">
+            <a href="{{ url_for('index') }}">HOME</a>
+            <span class="sep">&gt;</span>
+            <span class="current">Pricing</span>
+        </nav>
+
+        <div class="tool-badge"><span class="badge-dot"></span> INFO</div>
+        <h1 class="tool-title">Pricing Plans</h1>
+        <p class="tool-desc">Everything you need for free today, with premium features coming soon.</p>
+
+        <div class="plan-grid">
+            <div class="plan-card">
+                <h3>Free</h3>
+                <p>All basic resize, compress, crop, rotate tools at no cost.</p>
+                <strong>Always free</strong>
+            </div>
+            <div class="plan-card plan-card-highlight">
+                <h3>Pro</h3>
+                <p>Coming soon — faster processing, larger uploads, and priority support.</p>
+                <strong>Launch soon</strong>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
