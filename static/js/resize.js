@@ -346,3 +346,17 @@ document.addEventListener("DOMContentLoaded", () => {
         els.previewMeta.textContent = meta;
     }
 });
+
+// ── Guarantee correct target before submit ─────────────
+const resizeForm = document.getElementById("resize-form");
+resizeForm.addEventListener("submit", () => {
+    const currentMode = els.mode.value; // 'size' | 'percent' | 'social'
+
+    // Only 'size' and 'percent' modes have their own saved target
+    if (currentMode === 'size' || currentMode === 'percent') {
+        const saved = modeTarget[currentMode] || { value: '', unit: 'KB' };
+        targetSizeInput.value = saved.value || '';
+        targetUnitSelect.value = saved.unit || 'KB';
+    }
+    // 'social' mode: leave target_size input as-is (whatever user set there)
+});
