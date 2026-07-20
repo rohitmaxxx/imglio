@@ -88,6 +88,7 @@ async def index(request: Request):
     )
 
 
+
 @app.get("/compress", name="compress_page")
 async def compress_page(request: Request):
     return templates.TemplateResponse("compress.html", {"request": request})
