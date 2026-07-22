@@ -2,7 +2,6 @@
 
 import io
 
-from flask import send_file
 from PIL import Image
 from werkzeug.utils import secure_filename
 
@@ -151,41 +150,6 @@ def optimize_encode_to_target(
         current = current.resize((new_w, new_h), Image.LANCZOS)
 
 
-def send_processed(
-    image: Image.Image,
-    original_filename: str,
-    suffix: str,
-    export_format: str = "original",
-    target_bytes: int = 0,
-    quality: int = 90,
-):
-    fmt, ext, mime = resolve_format(image, original_filename, export_format)
-
-    if target_bytes > 0:
-        candidate = encode_image(image, fmt, quality=quality)
-        if len(candidate) <= target_bytes:
-            data = candidate
-        else:
-            if fmt not in ("JPEG", "WEBP"):
-                fmt, ext, mime = ("JPEG", "jpg", "jpeg")
-            # min_quality/max_quality/min_dim hata diye — ab function ke apne
-            # (zyada aggressive) defaults use honge, chahe format kuch bhi ho
-            data = optimize_encode_to_target(image, fmt, target_bytes)
-    else:
-        data = encode_image(image, fmt, quality=quality)
-
-    buffer = io.BytesIO(data)
-    buffer.seek(0)
-
-    name = secure_filename(original_filename).rsplit(".", 1)[0]
-    download_name = f"{name}_{suffix}.{ext}"
-    return send_file(
-        buffer,
-        mimetype=f"image/{mime}",
-        as_attachment=True,
-        download_name=download_name,
-    )
-
 def send_processed_fastapi(
     image,
     original_filename: str,
@@ -196,16 +160,19 @@ def send_processed_fastapi(
 ):
     fmt, ext, mime = resolve_format(image, original_filename, export_format)
 
-    # If user requested a target byte size, preserve the original output if it already fits.
-    # Only convert to JPEG/WebP when we need to shrink below the requested max size.
+    # If user requested a target byte size, get as close to it as possible —
+    # search quality up to the max before falling back to downscaling.
+    # PNG ignores quality, so only convert it to JPEG once optimized PNG doesn't fit.
     if target_bytes > 0:
-        candidate = encode_image(image, fmt, quality=quality)
-        if len(candidate) <= target_bytes:
-            data = candidate
-        else:
-            if fmt not in ("JPEG", "WEBP"):
+        if fmt not in ("JPEG", "WEBP"):
+            candidate = encode_image(image, fmt, quality=quality)
+            if len(candidate) <= target_bytes:
+                data = candidate
+            else:
                 fmt, ext, mime = ("JPEG", "jpg", "jpeg")
-            data = optimize_encode_to_target(image, fmt, target_bytes)   # min_quality/max_quality yahan se bhi hata dein
+                data = optimize_encode_to_target(image, fmt, target_bytes)
+        else:
+            data = optimize_encode_to_target(image, fmt, target_bytes)
     else:
         data = encode_image(image, fmt, quality=quality)
 

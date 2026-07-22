@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Login - PixResize{% endblock %}
+{% block title %}Login - imglio{% endblock %}
 {% block content %}
 <section class="auth-panel">
-    <h2>Login to PixResize</h2>
+    <h2>Login to imglio</h2>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -12,7 +12,7 @@
       {% endif %}
     {% endwith %}
 
-    <div class="auth-step" {% if request.args.get('step') == 'otp' %}style="display:none;"{% endif %}>
+    <div class="auth-step" {% if step == "otp" %}style="display:none;"{% endif %}>
         <form class="auth-form" method="POST" action="{{ url_for('login_send_otp') }}">
             <label>Name</label>
             <input type="text" name="name" required class="auth-input">
@@ -22,7 +22,7 @@
         </form>
     </div>
 
-    <div class="auth-step" {% if request.args.get('step') != 'otp' %}style="display:none;"{% endif %}>
+    <div class="auth-step" {% if step != "otp" %}style="display:none;"{% endif %}>
         <p style="color: #475569; margin-bottom: 18px;">Enter the OTP sent to your email.</p>
         <form class="auth-form" method="POST" action="{{ url_for('login_verify_otp') }}">
             <label>OTP</label>

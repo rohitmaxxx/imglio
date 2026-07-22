@@ -8,7 +8,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 # Upload limits
-MAX_UPLOAD_MB = 16
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp", "bmp", "tiff"}
 
 # Output formats users can pick in Export Settings

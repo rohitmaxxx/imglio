@@ -2,7 +2,7 @@
  * Shared frontend helpers — reuse across tools.
  * Add new helpers here instead of copying paste in every tool JS file.
  */
-window.PixResize = window.PixResize || {};
+window.Imglio = window.Imglio || {};
 
 (function (PR) {
     PR.setupUpload = function ({ zone, input, onFile }) {
@@ -50,4 +50,4 @@ window.PixResize = window.PixResize || {};
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
         return (bytes / (1024 * 1024)).toFixed(2) + " MB";
     };
-})(window.PixResize);
+})(window.Imglio);
