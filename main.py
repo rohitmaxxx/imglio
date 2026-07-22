@@ -1,17 +1,22 @@
 from fastapi import FastAPI, Request, UploadFile, File, Form
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from jinja2 import pass_context
 
 import os
+import asyncio
 
 from config import DEFAULTS, SOCIAL_PRESETS
 from services import allowed_file, open_image, parse_target_bytes, send_processed_fastapi
+from services import analytics
 from services.resize import apply_resize
 
 app = FastAPI()
+
+# initialize analytics DB (local sqlite by default)
+analytics.init_db(os.environ.get("ANALYTICS_DB", "data/analytics.db"))
 
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -23,24 +28,38 @@ app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SECRET_KEY", "d
 
 # Jinja helpers to mimic Flask template globals: url_for, get_flashed_messages, session
 @pass_context
-def _jinja_url_for(context, endpoint: str):
+def _jinja_url_for(context, endpoint: str, *args, **kwargs):
+    # Support calls like: url_for('static', filename='css/style.css')
     req: Request = context.get("request")
     try:
-        return req.url_for(endpoint)
+        # Special-case static files: FastAPI's StaticFiles route expects 'path'
+        if endpoint == "static":
+            # accept either filename= or path=
+            fname = kwargs.get("filename") or kwargs.get("path") or (args[0] if args else None)
+            if fname is None:
+                return req.url_for(endpoint)
+            return req.url_for(endpoint, path=fname)
+
+        # For other endpoints, pass through any provided args/kwargs
+        try:
+            return req.url_for(endpoint, *args, **kwargs)
+        except Exception:
+            # fallback mapping for non-routable endpoints (templates expecting Flask-like names)
+            mapping = {
+                "index": "/",
+                "compress_page": "/compress",
+                "crop_page": "/crop",
+                "rotate_page": "/rotate",
+                "login_page": "/login",
+                "signup_page": "/signup",
+                "logout": "/logout",
+                "convert_page": "/convert",
+                "more_page": "/more",
+                "pricing_page": "/pricing",
+            }
+            return mapping.get(endpoint, "#")
     except Exception:
-        mapping = {
-            "index": "/",
-            "compress_page": "/compress",
-            "crop_page": "/crop",
-            "rotate_page": "/rotate",
-            "login_page": "/login",
-            "signup_page": "/signup",
-            "logout": "/logout",
-            "convert_page": "/convert",
-            "more_page": "/more",
-            "pricing_page": "/pricing",
-        }
-        return mapping.get(endpoint, "#")
+        return "#"
 
 
 @pass_context
@@ -52,15 +71,32 @@ def _jinja_get_flashed_messages(context):
     return flashes
 
 
-@pass_context
-def _jinja_session(context):
-    req: Request = context.get("request")
-    return getattr(req, "session", {})
-
-
 templates.env.globals["url_for"] = _jinja_url_for
 templates.env.globals["get_flashed_messages"] = _jinja_get_flashed_messages
-templates.env.globals["session"] = _jinja_session
+
+
+def render_template(request: Request, template_name: str, **context):
+    context.setdefault("request", request)
+    context.setdefault("session", getattr(request, "session", {}))
+    return templates.TemplateResponse(template_name, context)
+
+
+@app.middleware("http")
+async def analytics_middleware(request: Request, call_next):
+    response = await call_next(request)
+    try:
+        ip = request.client.host if request.client else None
+        path = str(request.url)
+        method = request.method
+        ua = request.headers.get("user-agent", "")
+        user_email = request.session.get("user_email") if hasattr(request, "session") else None
+        user_name = request.session.get("user_name") if hasattr(request, "session") else None
+        details = {"status_code": response.status_code}
+        loop = asyncio.get_event_loop()
+        loop.run_in_executor(None, analytics.log_event, ip, path, method, user_email, user_name, ua, "visit", details)
+    except Exception:
+        pass
+    return response
 
 
 def _flash(request: Request, message: str):
@@ -82,46 +118,48 @@ def _upload_adapter(upload: UploadFile):
 
 @app.get("/", name="index")
 async def index(request: Request):
-    return templates.TemplateResponse(
+    return render_template(
+        request,
         "index.html",
-        {"request": request, "social_presets": SOCIAL_PRESETS, "defaults": DEFAULTS},
+        social_presets=SOCIAL_PRESETS,
+        defaults=DEFAULTS,
     )
 
 
 
 @app.get("/compress", name="compress_page")
 async def compress_page(request: Request):
-    return templates.TemplateResponse("compress.html", {"request": request})
+    return render_template(request, "compress.html")
 
 
 @app.get("/crop", name="crop_page")
 async def crop_page(request: Request):
-    return templates.TemplateResponse("crop.html", {"request": request})
+    return render_template(request, "crop.html")
 
 
 @app.get("/rotate", name="rotate_page")
 async def rotate_page(request: Request):
-    return templates.TemplateResponse("rotate.html", {"request": request})
+    return render_template(request, "rotate.html")
 
 
 @app.get("/convert", name="convert_page")
 async def convert_page(request: Request):
-    return templates.TemplateResponse("convert.html", {"request": request})
+    return render_template(request, "convert.html")
 
 
 @app.get("/more", name="more_page")
 async def more_page(request: Request):
-    return templates.TemplateResponse("more.html", {"request": request})
+    return render_template(request, "more.html")
 
 
 @app.get("/pricing", name="pricing_page")
 async def pricing_page(request: Request):
-    return templates.TemplateResponse("pricing.html", {"request": request})
+    return render_template(request, "pricing.html")
 
 
 @app.get("/signup", name="signup_page")
 async def signup_get(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
+    return render_template(request, "signup.html")
 
 
 @app.post("/signup")
@@ -132,10 +170,16 @@ async def signup_post(request: Request):
 
 @app.get("/login", name="login_page")
 async def login_get(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
 
+    step = request.query_params.get("step")
 
-@app.post("/login/send-otp")
+    return render_template(
+        request,
+        "login.html",
+        step=step
+    )
+
+@app.post("/login/send-otp",name="login_send_otp")
 async def login_send_otp(request: Request, name: str = Form(...), email: str = Form(...)):
     name = (name or "").strip()
     email = (email or "").strip().lower()
@@ -152,7 +196,7 @@ async def login_send_otp(request: Request, name: str = Form(...), email: str = F
     return RedirectResponse(url="/login?step=otp", status_code=303)
 
 
-@app.post("/login/verify-otp")
+@app.post("/login/verify-otp",name="login_verify_otp")
 async def login_verify_otp(request: Request, otp: str = Form(...)):
     email = request.session.get("pending_login_email")
     otp_input = otp or ""
@@ -192,10 +236,29 @@ async def resize(request: Request, file: UploadFile = File(...), mode: str = For
     target_bytes = parse_target_bytes(target_size, target_unit)
 
     try:
+        # Log the resize request (don't block request processing)
+        try:
+            ip = request.client.host if request.client else None
+            ua = request.headers.get("user-agent", "")
+            loop = asyncio.get_event_loop()
+            loop.run_in_executor(
+                None,
+                analytics.log_event,
+                ip,
+                str(request.url),
+                request.method,
+                request.session.get("user_email") if hasattr(request, "session") else None,
+                request.session.get("user_name") if hasattr(request, "session") else None,
+                ua,
+                "resize_request",
+                {"filename": file.filename, "form": form_data, "target_bytes": target_bytes},
+            )
+        except Exception:
+            pass
         adapter = _upload_adapter(file)
         image = open_image(adapter)
         result = apply_resize(image, form_data)
-        return await send_processed_fastapi(result, file.filename, suffix=f"resized_{result.width}x{result.height}", export_format=export_format, target_bytes=target_bytes)
+        return send_processed_fastapi(result, file.filename, suffix=f"resized_{result.width}x{result.height}", export_format=export_format, target_bytes=target_bytes)
     except Exception:
         _flash(request, "Failed to process image. Please try another file.")
         return RedirectResponse(url="/", status_code=303)
@@ -210,10 +273,30 @@ async def do_compress(request: Request, file: UploadFile = File(...), quality: i
     q = max(10, min(95, int(quality)))
     target_bytes = parse_target_bytes(target_size, target_unit)
     try:
+        # Log compress request
+        try:
+            ip = request.client.host if request.client else None
+            ua = request.headers.get("user-agent", "")
+            loop = asyncio.get_event_loop()
+            loop.run_in_executor(
+                None,
+                analytics.log_event,
+                ip,
+                str(request.url),
+                request.method,
+                request.session.get("user_email") if hasattr(request, "session") else None,
+                request.session.get("user_name") if hasattr(request, "session") else None,
+                ua,
+                "compress_request",
+                {"filename": file.filename, "quality": q, "target_bytes": target_bytes},
+            )
+        except Exception:
+            pass
+
         adapter = _upload_adapter(file)
         image = open_image(adapter)
         export = "png" if image.mode == "RGBA" else "jpg"
-        return await send_processed_fastapi(image, file.filename, suffix=f"compressed_q{q}", export_format=export, target_bytes=target_bytes, quality=q)
+        return send_processed_fastapi(image, file.filename, suffix=f"compressed_q{q}", export_format=export, target_bytes=target_bytes, quality=q)
     except Exception:
         _flash(request, "Failed to compress image. Please try another file.")
         return RedirectResponse(url="/compress", status_code=303)
@@ -226,6 +309,26 @@ async def do_crop(request: Request, file: UploadFile = File(...), x: int = Form(
         return RedirectResponse(url="/crop", status_code=303)
 
     try:
+        # Log crop request
+        try:
+            ip = request.client.host if request.client else None
+            ua = request.headers.get("user-agent", "")
+            loop = asyncio.get_event_loop()
+            loop.run_in_executor(
+                None,
+                analytics.log_event,
+                ip,
+                str(request.url),
+                request.method,
+                request.session.get("user_email") if hasattr(request, "session") else None,
+                request.session.get("user_name") if hasattr(request, "session") else None,
+                ua,
+                "crop_request",
+                {"filename": file.filename, "x": x, "y": y, "width": width, "height": height},
+            )
+        except Exception:
+            pass
+
         adapter = _upload_adapter(file)
         image = open_image(adapter)
         img_w, img_h = image.size
@@ -234,7 +337,7 @@ async def do_crop(request: Request, file: UploadFile = File(...), x: int = Form(
         w = max(1, min(int(width), img_w - x))
         h = max(1, min(int(height), img_h - y))
         cropped = image.crop((x, y, x + w, y + h))
-        return await send_processed_fastapi(cropped, file.filename, suffix=f"cropped_{w}x{h}")
+        return send_processed_fastapi(cropped, file.filename, suffix=f"cropped_{w}x{h}")
     except Exception:
         _flash(request, "Failed to crop image. Please try another file.")
         return RedirectResponse(url="/crop", status_code=303)
@@ -250,10 +353,30 @@ async def do_rotate(request: Request, file: UploadFile = File(...), angle: int =
 
     ang = int(angle) % 360
     try:
+        # Log rotate request
+        try:
+            ip = request.client.host if request.client else None
+            ua = request.headers.get("user-agent", "")
+            loop = asyncio.get_event_loop()
+            loop.run_in_executor(
+                None,
+                analytics.log_event,
+                ip,
+                str(request.url),
+                request.method,
+                request.session.get("user_email") if hasattr(request, "session") else None,
+                request.session.get("user_name") if hasattr(request, "session") else None,
+                ua,
+                "rotate_request",
+                {"filename": file.filename, "angle": ang},
+            )
+        except Exception:
+            pass
+
         adapter = _upload_adapter(file)
         image = open_image(adapter)
         rotated = image.rotate(-ang, expand=True, resample=Image.Resampling.BICUBIC)
-        return await send_processed_fastapi(rotated, file.filename, suffix=f"rotated_{ang}")
+        return send_processed_fastapi(rotated, file.filename, suffix=f"rotated_{ang}")
     except Exception:
         _flash(request, "Failed to rotate image. Please try another file.")
         return RedirectResponse(url="/rotate", status_code=303)

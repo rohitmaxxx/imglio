@@ -3,7 +3,7 @@
  * To add a new mode: add a tab button + panel in HTML, then handle it in setMode().
  */
 document.addEventListener("DOMContentLoaded", () => {
-    const PR = window.PixResize;
+    const PR = window.Imglio;
 
     const els = {
         zone: document.getElementById("upload-zone"),

@@ -282,53 +282,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Promo Banner */
-.promo-banner {
-    background: #fff5f5;
-    border: 1px solid #fecaca;
-    border-left: none;
-    border-right: none;
-}
-
-.promo-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 10px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
-
-.promo-text {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #991b1b;
-}
-
-.promo-icon {
-    font-size: 18px;
-}
-
-.btn-promo {
-    background: #e11d48;
-    color: #fff;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    letter-spacing: 0.5px;
-}
-
-.btn-promo:hover {
-    background: #be123c;
-}
-
 /* Main Content */
 .main-content {
     max-width: 900px;
@@ -506,22 +459,6 @@ body {
 .option-group input:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #475569;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.checkbox-label input {
-    width: 16px;
-    height: 16px;
-    accent-color: #2563eb;
 }
 
 .btn-resize {
@@ -1212,10 +1149,6 @@ body {
     color: #059669;
 }
 
-.footer-link-arrow {
-    font-weight: 500;
-}
-
 /* Responsive */
 @media (max-width: 900px) {
     .footer-inner {
@@ -1251,11 +1184,6 @@ body {
 
     .options-grid {
         grid-template-columns: 1fr;
-    }
-
-    .promo-inner {
-        flex-direction: column;
-        text-align: center;
     }
 
     .footer-inner {

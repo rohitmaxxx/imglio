@@ -30,7 +30,7 @@ def resize_social(image: Image.Image, width: int, height: int) -> Image.Image:
 
 
 # Registry: mode name → handler factory that receives (image, form_data dict)
-# Add new modes here without touching Flask routes.
+# Add new modes here without touching route handlers.
 def apply_resize(image: Image.Image, form: dict) -> Image.Image:
     mode = (form.get("mode") or "size").lower()
 
