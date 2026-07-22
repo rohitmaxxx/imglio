@@ -302,6 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userEditingTarget = false;
     });
 
+    
     // ── Social presets ─────────────────────────────────
     document.querySelectorAll(".social-card").forEach((card) => {
         card.addEventListener("click", () => {
