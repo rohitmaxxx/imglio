@@ -1,0 +1,277 @@
+/* Footer — related-tools shelf, CTA banner, and the footer columns themselves.
+   Imported by Footer.tsx only. */
+
+.related-section {
+    max-width: 900px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+}
+
+.related-heading {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 18px;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.related-card {
+    display: block;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px 18px;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.related-card:hover {
+    border-color: #6ee7b7;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+    transform: translateY(-3px);
+}
+
+.related-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.related-icon-compress {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.related-icon-crop {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.related-icon-rotate {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.related-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.related-card p {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* CTA Section (above footer) */
+.cta-section {
+    max-width: 900px;
+    margin: 40px auto 0;
+    padding: 0 24px;
+}
+
+.cta-box {
+    background: linear-gradient(145deg, #ecfdf5 0%, #f0fdfa 55%, #eff6ff 100%);
+    border: 1px solid #a7f3d0;
+    border-radius: 16px;
+    padding: 36px 40px 32px;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #065f46;
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+}
+
+.cta-desc {
+    font-size: 15px;
+    color: #047857;
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 0 auto 22px;
+}
+
+.cta-features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.cta-chip {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 999px;
+}
+
+.cta-btn {
+    display: inline-block;
+    background: #059669;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 10px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.cta-btn:hover {
+    background: #047857;
+    transform: translateY(-1px);
+}
+
+/* Footer */
+.footer {
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 48px;
+    padding: 48px 0 56px;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1.4fr 1.1fr 1fr 1fr 1fr;
+    gap: 36px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+/* Local, uniquely-named equivalents of Logo.module.css's .logo-title/.logo-tagline —
+   CSS Modules scope class names per file, so the original ".footer-logo .logo-title"
+   cross-module override can't work; these bake the footer-specific values in directly. */
+.footer-logo-title {
+    color: #059669;
+    font-size: 16px;
+}
+
+.footer-logo-tagline {
+    font-size: 10px;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+.footer-desc {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+    max-width: 280px;
+    margin-bottom: 20px;
+}
+
+.footer-social {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-social a {
+    color: var(--color-ink-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-surface-muted);
+    transition: color var(--duration-base) ease, background var(--duration-base) ease, transform var(--duration-base) var(--ease-premium);
+}
+
+.footer-social a:hover {
+    color: #fff;
+    background: var(--gradient-accent);
+    transform: translateY(-3px);
+}
+
+.footer-newsletter-desc {
+    font-size: 13px;
+    color: var(--color-ink-400);
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.footer-col h4 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #0f172a;
+    margin-bottom: 16px;
+}
+
+.footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-col a {
+    text-decoration: none;
+    color: #475569;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.footer-col a:hover {
+    color: #059669;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .cta-box {
+        padding: 28px 20px 24px;
+    }
+
+    .cta-title {
+        font-size: 20px;
+    }
+
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+}

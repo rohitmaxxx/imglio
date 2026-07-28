@@ -1,0 +1,192 @@
+/* Shared form-field primitives — imported by every tool settings panel
+   (Resize, Compress, Crop, Rotate) plus their preview sections. */
+
+.resize-options {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.option-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.option-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.option-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+.field:last-child {
+    margin-bottom: 0;
+}
+
+.field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.field .optional {
+    font-weight: 400;
+    color: #94a3b8;
+}
+
+.input-with-unit,
+.input-with-select {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+    transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) ease, transform var(--duration-base) ease;
+}
+
+.input-with-unit:focus-within,
+.input-with-select:focus-within {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    transform: translateY(-1px);
+}
+
+.input-with-unit input,
+.input-with-select input {
+    flex: 1;
+    border: none;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    min-width: 0;
+    background: transparent;
+}
+
+.unit-tag {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    border-left: 1px solid #e2e8f0;
+}
+
+.input-with-select select,
+.full-select {
+    border: none;
+    background: #f1f5f9;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #334155;
+    border-left: 1px solid #e2e8f0;
+    cursor: pointer;
+    outline: none;
+}
+
+.full-select {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    padding: 11px 14px;
+    border-left: 1px solid #e2e8f0;
+    transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) ease, transform var(--duration-base) ease;
+}
+
+.full-select:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    transform: translateY(-1px);
+}
+
+.check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.check-row input {
+    width: 16px;
+    height: 16px;
+    accent-color: #059669;
+}
+
+.range-input {
+    width: 100%;
+    accent-color: #059669;
+    margin-top: 8px;
+}
+
+.hint-text {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+.preview-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.preview-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #475569;
+}
+
+.preview-meta {
+    font-weight: 500;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.preview-section img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+}

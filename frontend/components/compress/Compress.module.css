@@ -1,0 +1,7 @@
+/* Compress tool — original-vs-target size readout line. */
+
+.size-compare {
+    margin: 12px 0 16px;
+    font-size: 14px;
+    color: #475569;
+}
