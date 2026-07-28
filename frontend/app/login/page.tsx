@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <section className={styles["auth-panel"]}>
-      <h2>Login to imglio</h2>
+      <h2>Login to pixanzo</h2>
       <Suspense fallback={null}>
         <LoginForm />
       </Suspense>

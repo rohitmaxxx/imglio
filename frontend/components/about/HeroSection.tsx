@@ -11,7 +11,7 @@ export default function HeroSection() {
       <div className={styles["about-hero-inner"]}>
         <Reveal>
           <span className={styles["about-eyebrow"]}>
-            <span className={toolCardStyles["badge-dot"]}></span> ABOUT IMGLIO
+            <span className={toolCardStyles["badge-dot"]}></span> ABOUT PIXANZO
           </span>
         </Reveal>
         <Reveal delay={80}>
@@ -21,7 +21,7 @@ export default function HeroSection() {
         </Reveal>
         <Reveal delay={160}>
           <p className={styles["about-hero-subtitle"]}>
-            imglio is a free, browser-based toolkit for resizing, compressing, cropping, converting, and rotating images — built for people who just
+            pixanzo is a free, browser-based toolkit for resizing, compressing, cropping, converting, and rotating images — built for people who just
             want the job done, without installing software, watching ads, or creating an account.
           </p>
         </Reveal>

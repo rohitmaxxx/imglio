@@ -18,13 +18,13 @@ def send_otp_email(name, email):
     otp = generate_otp()
     _otp_store[email] = {"otp": otp, "expires": time.time() + OTP_EXPIRY_SECONDS, "name": name}
 
-    body = f"Hi {name},\n\nYour imglio login OTP is: {otp}\nValid for 5 minutes.\n"
+    body = f"Hi {name},\n\nYour pixanzo login OTP is: {otp}\nValid for 5 minutes.\n"
     if not settings.SMTP_USER or not settings.SMTP_PASS:
         print(f"[DEV MODE] OTP for {email}: {otp}")
         return True
 
     msg = MIMEText(body)
-    msg["Subject"] = "Your imglio Login OTP"
+    msg["Subject"] = "Your pixanzo Login OTP"
     msg["From"] = settings.SMTP_USER
     msg["To"] = email
     try:
