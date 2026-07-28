@@ -1,0 +1,30 @@
+/* Shared brand-mark styling — imported by both the header logo and the footer logo. */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.logo-icon {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1e293b;
+}
+
+.logo-tagline {
+    font-size: 10px;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}

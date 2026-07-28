@@ -1,0 +1,148 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Design tokens — single source of truth for the visual system.
+   Existing hex values are preserved as the default brand colors;
+   this just gives every later rule a consistent vocabulary to draw
+   from instead of repeating raw values.
+   ══════════════════════════════════════════════════════════ */
+:root {
+    /* Brand */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-500: #2563eb;
+    --color-primary-600: #1d4ed8;
+    --color-primary-700: #1e40af;
+    --color-accent-50: #ecfdf5;
+    --color-accent-100: #d1fae5;
+    --color-accent-500: #059669;
+    --color-accent-600: #047857;
+    --color-accent-bright: #10b981;
+    --color-sky: #0ea5e9;
+
+    /* Neutrals */
+    --color-ink-900: #0f172a;
+    --color-ink-700: #334155;
+    --color-ink-600: #475569;
+    --color-ink-400: #64748b;
+    --color-ink-300: #94a3b8;
+    --color-border: #e2e8f0;
+    --color-border-soft: rgba(148, 163, 184, 0.18);
+    --color-surface: #ffffff;
+    --color-surface-muted: #f8fafc;
+    --color-bg: #f1f5f9;
+
+    /* Semantic */
+    --color-success: #059669;
+    --color-success-bg: #ecfdf5;
+    --color-error: #dc2626;
+    --color-error-bg: #fef2f2;
+    --color-warning: #d97706;
+    --color-warning-bg: #fef3c7;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+    --gradient-primary-hover: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    --gradient-accent: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+    --gradient-accent-hover: linear-gradient(135deg, #1d4ed8 0%, #047857 100%);
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-full: 999px;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 12px 28px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 22px 48px rgba(15, 23, 42, 0.1);
+    --shadow-glow-primary: 0 14px 30px rgba(37, 99, 235, 0.24);
+    --shadow-glow-accent: 0 14px 32px rgba(5, 150, 105, 0.24);
+
+    /* Motion */
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-fast: 0.15s;
+    --duration-base: 0.25s;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--color-bg);
+    color: #1e293b;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+::selection {
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   Shared keyframes — referenced by name (as bare identifiers) from more
+   than one CSS Module. CSS Modules hash keyframe names per file, so any
+   animation used across multiple component modules has to live here;
+   every other keyframe has been co-located in its owning module.
+   ══════════════════════════════════════════════════════════ */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroGlowFloat {
+    from {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+        transform: translate3d(0, 24px, 0) scale(1.06);
+    }
+}
+
+@keyframes successPop {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

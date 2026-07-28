@@ -1,0 +1,52 @@
+/* Trust stats band on the homepage — imported by HomeStats.tsx only. */
+
+.stats-section {
+    background: linear-gradient(135deg, #0f172a 0%, #164e63 55%, #065f46 100%);
+    padding: 64px 24px;
+}
+
+.stats-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.stats-heading {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(226, 232, 240, 0.75);
+    margin-bottom: 36px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    text-align: center;
+}
+
+.stat-card {
+    padding: 8px;
+}
+
+.stat-label {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(226, 232, 240, 0.85);
+}
+
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-section {
+        padding: 48px 20px;
+    }
+}

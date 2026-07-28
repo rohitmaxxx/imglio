@@ -1,0 +1,149 @@
+/* Resize tool — mode tabs, per-mode panels, social presets, export settings. */
+
+.mode-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    background: #e2e8f0;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
+
+.mode-tab {
+    border: none;
+    background: transparent;
+    padding: 10px 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #64748b;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-premium);
+}
+
+.mode-tab.active {
+    background: #fff;
+    color: #047857;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-accent-100);
+}
+
+.mode-panel .dim-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.percent-row label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.percent-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.percent-slider-wrap strong {
+    min-width: 48px;
+    text-align: right;
+    color: #047857;
+}
+
+.percent-hint {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.social-card {
+    text-align: left;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.social-card:hover {
+    border-color: #6ee7b7;
+}
+
+.social-card.active {
+    border-color: #059669;
+    background: #ecfdf5;
+}
+
+.social-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+
+.social-size {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.export-block {
+    padding: 0;
+    overflow: hidden;
+}
+
+.export-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: none;
+    padding: 16px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+.export-toggle .chevron {
+    transition: transform 0.2s;
+    color: #64748b;
+}
+
+.export-toggle.collapsed .chevron {
+    transform: rotate(-90deg);
+}
+
+.export-body {
+    padding: 0 18px 18px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .mode-tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .mode-panel .dim-row,
+    .social-grid {
+        grid-template-columns: 1fr;
+    }
+}

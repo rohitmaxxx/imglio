@@ -1,0 +1,51 @@
+/* Rotate tool — preset angle buttons and the checkerboard rotation preview. */
+
+.rotate-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.rotate-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rotate-btn:hover {
+    border-color: #059669;
+    color: #059669;
+}
+
+.rotate-btn.active {
+    background: #ecfdf5;
+    border-color: #059669;
+    color: #047857;
+}
+
+.rotate-preview-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    background: repeating-conic-gradient(#f1f5f9 0% 25%, #fff 0% 50%) 50% / 20px 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    padding: 24px;
+}
+
+.rotate-preview-wrap img {
+    max-width: 100%;
+    max-height: 280px;
+    transition: transform 0.25s ease;
+    border: none;
+}

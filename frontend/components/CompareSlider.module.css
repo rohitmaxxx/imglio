@@ -1,0 +1,144 @@
+/* Before/after comparison — overlay-slider variant (BeforeAfterSlider.tsx) and the
+   simple side-by-side variant used where an overlay slider wouldn't align (Crop/Rotate results). */
+
+.compare-slider {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: #0f172a;
+    height: clamp(240px, 40vw, 420px);
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none;
+    box-shadow: var(--shadow-md);
+}
+
+.compare-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.compare-before-clip {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--compare-pos, 50%)) 0 0);
+}
+
+.compare-tag {
+    position: absolute;
+    top: 14px;
+    z-index: 2;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: var(--radius-full);
+}
+
+.compare-tag-before {
+    left: 14px;
+}
+
+.compare-tag-after {
+    right: 14px;
+}
+
+.compare-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.compare-handle::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background: #fff;
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.compare-handle-grip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--color-ink-900);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--duration-fast) ease;
+}
+
+.compare-handle:hover .compare-handle-grip,
+.compare-handle:focus-visible .compare-handle-grip {
+    transform: scale(1.08);
+}
+
+.compare-handle:focus-visible {
+    outline: none;
+}
+
+.compare-handle:focus-visible .compare-handle-grip {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3), var(--shadow-md);
+}
+
+.compare-sidebyside {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.compare-pane {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0f172a;
+    height: clamp(180px, 28vw, 300px);
+}
+
+.compare-pane img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.compare-pane-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+}
+
+@media (max-width: 640px) {
+    .compare-sidebyside {
+        grid-template-columns: 1fr;
+    }
+}
