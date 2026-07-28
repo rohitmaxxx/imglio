@@ -9,7 +9,7 @@ export default function StorySection() {
           <span className={styles["about-kicker"]}>Our Story</span>
           <h2 className={styles["about-section-title"]}>Built out of frustration with bloated image tools</h2>
           <p className={styles["about-body"]}>
-            Most online image editors bury a simple resize behind ten popup ads, a forced signup, and a watermark on the result. imglio exists
+            Most online image editors bury a simple resize behind ten popup ads, a forced signup, and a watermark on the result. pixanzo exists
             because that shouldn&apos;t be the price of shrinking a photo before you email it.
           </p>
           <p className={styles["about-body"]}>

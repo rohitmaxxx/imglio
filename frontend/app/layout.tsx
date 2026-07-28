@@ -14,8 +14,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "imglio — Free Online Image Resizer, Compressor & Converter",
-    template: "%s · imglio",
+    default: "pixanzo — Free Online Image Resizer, Compressor & Converter",
+    template: "%s · pixanzo",
   },
   description:
     "Resize, compress, crop, rotate, and convert images for free — right in your browser. No signup, no watermarks, with social media presets and exact target file sizes.",
@@ -23,14 +23,14 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
-    siteName: "imglio",
-    title: "imglio — Free Online Image Resizer, Compressor & Converter",
+    siteName: "pixanzo",
+    title: "pixanzo — Free Online Image Resizer, Compressor & Converter",
     description: "Resize, compress, crop, rotate, and convert images for free — right in your browser.",
     url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
-    title: "imglio — Free Online Image Resizer, Compressor & Converter",
+    title: "pixanzo — Free Online Image Resizer, Compressor & Converter",
     description: "Resize, compress, crop, rotate, and convert images for free — right in your browser.",
   },
   alternates: {

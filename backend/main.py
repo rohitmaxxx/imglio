@@ -8,7 +8,7 @@ from middleware.analytics_middleware import analytics_middleware
 from routers import auth, config, images
 from services import analytics
 
-app = FastAPI(title="imglio API")
+app = FastAPI(title="pixanzo API")
 
 app.add_middleware(
     CORSMiddleware,

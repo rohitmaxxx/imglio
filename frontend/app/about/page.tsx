@@ -13,21 +13,21 @@ import FaqSection from "@/components/about/FaqSection";
 import CtaSection from "@/components/about/CtaSection";
 
 const description =
-  "imglio is a free, browser-based toolkit for resizing, compressing, cropping, converting, and rotating images — no signup, no watermark, nothing stored.";
+  "pixanzo is a free, browser-based toolkit for resizing, compressing, cropping, converting, and rotating images — no signup, no watermark, nothing stored.";
 
 export const metadata: Metadata = {
   title: "About Us",
   description,
   alternates: { canonical: "/about" },
   openGraph: {
-    title: "About imglio",
+    title: "About pixanzo",
     description,
     url: "/about",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About imglio",
+    title: "About pixanzo",
     description,
   },
 };
@@ -35,11 +35,11 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
-  name: "About imglio",
+  name: "About pixanzo",
   description,
   mainEntity: {
     "@type": "Organization",
-    name: "imglio",
+    name: "pixanzo",
     description,
   },
 };

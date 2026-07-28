@@ -2,7 +2,7 @@ import Reveal from "@/components/about/Reveal";
 import styles from "@/components/contact/Contact.module.css";
 
 const TOPICS = [
-  { title: "Feature requests", desc: "Tell us what tool or option you wish imglio had." },
+  { title: "Feature requests", desc: "Tell us what tool or option you wish pixanzo had." },
   { title: "Bug reports", desc: "Something not resizing, cropping, or downloading right? Let us know." },
   { title: "General feedback", desc: "Good or bad, we read every message that comes through." },
 ];

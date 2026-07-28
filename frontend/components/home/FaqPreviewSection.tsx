@@ -5,7 +5,7 @@ import styles from "@/components/home/FaqPreview.module.css";
 
 const FAQS = [
   {
-    question: "Is imglio really free?",
+    question: "Is pixanzo really free?",
     answer: "Yes. Resize, compress, crop, and rotate are free to use with no limits on how often you use them and no account required.",
   },
   {
@@ -18,7 +18,7 @@ const FAQS = [
     answer: "No — every image tool works immediately without signing up.",
   },
   {
-    question: "Can I use imglio on my phone?",
+    question: "Can I use pixanzo on my phone?",
     answer: "Yes. The entire interface is fully responsive and works the same way on mobile, tablet, and desktop browsers.",
   },
 ];

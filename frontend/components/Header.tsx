@@ -21,7 +21,7 @@ export default async function Header() {
             </svg>
           </div>
           <div className={logoStyles["logo-text"]}>
-            <span className={logoStyles["logo-title"]}>imglio</span>
+            <span className={logoStyles["logo-title"]}>pixanzo</span>
           </div>
         </Link>
 
