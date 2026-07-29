@@ -1,4 +1,32 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import type { AppConfig } from "@/types";
+
+// Server-only API_URL (no NEXT_PUBLIC_ prefix) takes precedence so server-side
+// calls — e.g. getConfig() from the homepage server component — can reach the
+// backend over the Docker network, while the browser bundle still gets
+// NEXT_PUBLIC_API_URL. Same precedence pattern already used in lib/auth.ts.
+export const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+const DEFAULT_CONFIG: AppConfig = {
+  social_presets: [
+    ["Instagram Post", 1080, 1080],
+    ["Instagram Story", 1080, 1920],
+    ["Facebook Cover", 820, 312],
+    ["Twitter / X Post", 1200, 675],
+    ["YouTube Thumbnail", 1280, 720],
+    ["LinkedIn Banner", 1584, 396],
+    ["Pinterest Pin", 1000, 1500],
+  ],
+  defaults: {
+    mode: "size",
+    width: 800,
+    height: 600,
+    percent: 100,
+    lock_aspect: true,
+    target_size: "",
+    target_unit: "KB",
+    export_format: "original",
+  },
+};
 
 export interface ResizeParams {
   file: File;
@@ -100,8 +128,13 @@ export async function logout(): Promise<void> {
   await fetch(`/api/auth/logout`, { method: "POST" });
 }
 
-export async function getConfig() {
-  const res = await fetch(`${API_URL}/api/config`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to load config.");
-  return res.json();
+export async function getConfig(): Promise<AppConfig> {
+  try {
+    const res = await fetch(`${API_URL}/api/config`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to load config.");
+    return await res.json();
+  } catch {
+    // Backend unreachable — fall back to defaults so the page still renders.
+    return DEFAULT_CONFIG;
+  }
 }

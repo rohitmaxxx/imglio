@@ -132,3 +132,67 @@ All processing endpoints reject disallowed file types with a flash message and r
 - **Signup is not implemented** — the endpoint just flashes "coming soon" and redirects to login.
 - **No upload size limit is enforced** — FastAPI/Starlette don't cap request body size by default; add a check (e.g. `Content-Length` guard or a reverse-proxy limit) before exposing this publicly.
 - Analytics DB (`data/analytics.db`) is unauthenticated and local-only; there's no route to view/query the collected data.
+
+## Docker
+
+Run the whole stack (Nginx + Next.js frontend + FastAPI backend) with a single command — no local Python/Node install required.
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) 24+
+- Docker Compose v2 (bundled with modern Docker Desktop; `docker compose version` should work)
+
+### Build & run
+
+```bash
+cp .env.example .env       # then edit values as needed (see below)
+docker compose up --build
+```
+
+The app is available at **http://localhost** (Nginx). The backend is also published directly at **http://localhost:8000** because the frontend's browser-side code (resize/compress/crop/rotate/config calls) talks to it directly — see [`services/api.ts`](frontend/services/api.ts).
+
+Run in the background:
+
+```bash
+docker compose up -d --build
+```
+
+### Stopping
+
+```bash
+docker compose down          # stop and remove containers
+docker compose down -v       # also delete the persisted analytics DB volume
+```
+
+### Environment variables
+
+All variables live in `.env` (copied from `.env.example`) and are read by `docker-compose.yml`. Full reference:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `NGINX_PORT` | `80` | Host port for the Nginx entrypoint |
+| `FRONTEND_PORT` | `3000` | Host port the Next.js container is also published on |
+| `BACKEND_PORT` | `8000` | Host port the FastAPI container is published on |
+| `JWT_SECRET` | *(dev default)* | JWT signing secret — **must** be overridden in production |
+| `JWT_EXPIRE_MINUTES` | `10080` | Auth token lifetime (7 days) |
+| `FRONTEND_ORIGIN` | `http://localhost` | Origin the backend's CORS policy allows — must match how you access the app |
+| `ANALYTICS_DB` | `data/analytics.db` | Path (inside the backend container) to the SQLite analytics store |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | — | OTP email delivery; leave `SMTP_USER`/`SMTP_PASS` blank to print OTPs to the backend container logs instead |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Backend URL the **browser** calls directly — baked into the frontend build, so changing it requires `docker compose up --build` again |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost` | Used for metadata/Open Graph/sitemap absolute URLs |
+
+Two more URLs are wired up automatically inside `docker-compose.yml` and don't need to be set by hand: the frontend container's own server-side code (SSR config fetch, the OTP-verify/logout route handlers) reaches the backend via the internal Docker network at `http://backend:8000`.
+
+### Architecture notes
+
+- **Nginx** (`nginx/nginx.conf`) is the single public entrypoint. It proxies `/api/auth/verify-otp` and `/api/auth/logout` to the **frontend** container (these are Next.js route handlers that set/clear the httpOnly auth cookie), everything else under `/api/` to the **backend** (FastAPI), and everything else to the frontend for pages/assets. It also handles gzip, security headers, `_next/static` caching, and a 25MB upload limit for the image-processing endpoints.
+- The frontend is **Next.js**, not a static SPA — it runs its own Node server (`next start`, via the standalone build output) rather than being served as static files by Nginx, because it has server-rendered pages and its own API routes.
+- The backend's SQLite analytics DB persists in a named Docker volume (`backend_data`) so it survives `docker compose down` (but not `docker compose down -v`).
+
+### Troubleshooting
+
+- **"Network error" / failed image processing in the browser**: confirm `NEXT_PUBLIC_API_URL` in `.env` is a URL your *browser* (not just the Docker network) can reach, and that you rebuilt (`docker compose up --build`) after changing it — it's compiled into the JS bundle, not read at runtime.
+- **CORS errors in the browser console**: `FRONTEND_ORIGIN` must exactly match the origin you're loading the app from (scheme + host + port, no trailing slash). If you access the app via a different port than `NGINX_PORT`, update `FRONTEND_ORIGIN` to match and restart the backend.
+- **OTP emails never arrive**: leave `SMTP_USER`/`SMTP_PASS` blank for local dev — OTPs print to `docker compose logs backend` instead.
+- **`docker compose up` fails at `depends_on` / a service stuck "unhealthy"**: check that service's logs (`docker compose logs backend` / `frontend` / `nginx`); the healthchecks require `/api/config` (backend) and `/` (frontend) to respond within the configured `start_period`.
+- **Changes to backend Python code not showing up**: images are built once; re-run `docker compose up --build` after code changes (there's no hot-reload in the production containers by design).
