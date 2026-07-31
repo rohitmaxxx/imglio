@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import type { User } from "@/types";
 
-export const AUTH_COOKIE_NAME = "imglio_token";
+export const AUTH_COOKIE_NAME = "pixanzo_token";
 
 const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 

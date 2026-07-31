@@ -1,4 +1,4 @@
-# imglio
+# pixanzo
 
 A web app for quick, no-signup-required image manipulation: resize, compress, crop, rotate, and convert formats — with social-media size presets and byte-size targeting (e.g. "get this under 200KB").
 
@@ -45,36 +45,78 @@ image_resize/
 6. `send_processed_fastapi` streams the result back as a file download.
 7. In the background, the request is logged to SQLite via `analytics.log_event`.
 
-## Setup
+## Running Locally
 
-### Requirements
+The app is split into two projects that run side by side: a **FastAPI** backend ([backend/](backend/)) and a **Next.js** frontend ([frontend/](frontend/)).
 
-- Python 3.9+
-- See `requirements.txt`: Pillow, Werkzeug (for `secure_filename`), FastAPI, uvicorn, python-multipart.
+### Prerequisites
 
-### Install
+- **Node.js** 18.17+
+- **Python** 3.9+
+- **pip**
+- **npm**
+
+### Backend Setup
 
 ```bash
+cd backend
+
+# Create and activate a virtual environment
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Linux/macOS
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Configure environment variables
+copy .env.example .env   # Windows
+cp .env.example .env     # Linux/macOS
+
+# Run the FastAPI server
+uvicorn main:app --reload
 ```
 
-### Run
+The API will be available at `http://localhost:8000` (see [Environment variables](#environment-variables) below for what goes in `.env`).
+
+### Frontend Setup
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000
+cd frontend
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+copy .env.example .env.local   # Windows
+cp .env.example .env.local     # Linux/macOS
+
+# Run the Next.js dev server
+npm run dev
 ```
 
-or simply:
+The frontend reads the backend URL from `NEXT_PUBLIC_API_URL` / `API_URL` in `.env.local` — make sure these match the port the backend is actually running on (defaults to `8000` in [frontend/.env.example](frontend/.env.example)).
 
-```bash
-python main.py
-```
+### Access the Application
 
-App will be available at `http://localhost:8000`.
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8000
+- **API Documentation (Swagger UI):** http://localhost:8000/docs
+
+### Notes
+
+- Run the backend and frontend in two separate terminals — both need to be up at the same time for the app to work end to end.
+- If you change the backend's port, update `NEXT_PUBLIC_API_URL` and `API_URL` in `frontend/.env.local` to match.
+- If `SMTP_USER`/`SMTP_PASS` are left unset in `backend/.env`, login OTPs are printed to the backend console instead of emailed ("dev mode") — handy for local testing without SMTP credentials.
+- `JWT_SECRET` ships with an insecure default — override it via `backend/.env` before deploying anywhere real.
 
 ## Configuration
 
-All tunables live in [config.py](config.py):
+All tunables live in [backend/config/settings.py](backend/config/settings.py):
 
 | Setting | Purpose |
 |---|---|
@@ -85,14 +127,26 @@ All tunables live in [config.py](config.py):
 
 ### Environment variables
 
+#### Backend (`backend/.env`, see [backend/.env.example](backend/.env.example))
+
 | Variable | Default | Purpose |
 |---|---|---|
-| `SECRET_KEY` | `dev-secret-key-change-in-production` | Session/cookie signing key — **must be overridden in production** |
+| `JWT_SECRET` | `dev-jwt-secret-change-in-production` | Signing key for auth JWTs — **must be overridden in production** |
+| `JWT_EXPIRE_MINUTES` | `10080` (7 days) | How long an auth token stays valid |
+| `FRONTEND_ORIGIN` | `http://localhost:3000` | Allowed CORS origin for the frontend |
 | `ANALYTICS_DB` | `data/analytics.db` | Path to the SQLite analytics database |
 | `SMTP_HOST` | `smtp.gmail.com` | SMTP server used to send OTP emails |
 | `SMTP_PORT` | `587` | SMTP port |
 | `SMTP_USER` | *(none)* | SMTP username. If unset, OTPs are printed to the console instead of emailed ("dev mode") |
 | `SMTP_PASS` | *(none)* | SMTP password |
+
+#### Frontend (`frontend/.env.local`, see [frontend/.env.example](frontend/.env.example))
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `http://127.0.0.1:8000` | Backend base URL, used client-side and in server components |
+| `API_URL` | `http://127.0.0.1:8000` | Same backend URL, used server-side only (auth route handlers) |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Used to build absolute URLs for metadata, Open Graph, robots.txt, sitemap.xml |
 
 ## Routes
 
@@ -128,7 +182,7 @@ All processing endpoints reject disallowed file types with a flash message and r
 ## Known gaps / things to note before production
 
 - **OTP store is in-memory** (`services/auth.py`) — it resets on restart and won't work across multiple worker processes/instances.
-- **`SECRET_KEY` has an insecure default** — set a real one via environment variable before deploying.
+- **`JWT_SECRET` has an insecure default** — set a real one via environment variable before deploying.
 - **Signup is not implemented** — the endpoint just flashes "coming soon" and redirects to login.
 - **No upload size limit is enforced** — FastAPI/Starlette don't cap request body size by default; add a check (e.g. `Content-Length` guard or a reverse-proxy limit) before exposing this publicly.
 - Analytics DB (`data/analytics.db`) is unauthenticated and local-only; there's no route to view/query the collected data.

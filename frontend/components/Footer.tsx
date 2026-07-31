@@ -77,7 +77,7 @@ export default function Footer() {
                 </svg>
               </div>
               <div className={logoStyles["logo-text"]}>
-                <span className={styles["footer-logo-title"]}>imglio</span>
+                <span className={styles["footer-logo-title"]}>pixanzo</span>
                 <span className={styles["footer-logo-tagline"]}>FAST · FREE · SECURE</span>
               </div>
             </div>
