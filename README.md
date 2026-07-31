@@ -229,7 +229,7 @@ All variables live in `.env` (copied from `.env.example`) and are read by `docke
 | `BACKEND_PORT` | `8000` | Host port the FastAPI container is published on |
 | `JWT_SECRET` | *(dev default)* | JWT signing secret — **must** be overridden in production |
 | `JWT_EXPIRE_MINUTES` | `10080` | Auth token lifetime (7 days) |
-| `FRONTEND_ORIGIN` | `http://localhost` | Origin the backend's CORS policy allows — must match how you access the app |
+| `FRONTEND_ORIGIN` | `http://localhost,http://localhost:3000` | Comma-separated list of origins the backend's CORS policy allows — must include whichever origin you access the app from |
 | `ANALYTICS_DB` | `data/analytics.db` | Path (inside the backend container) to the SQLite analytics store |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | — | OTP email delivery; leave `SMTP_USER`/`SMTP_PASS` blank to print OTPs to the backend container logs instead |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Backend URL the **browser** calls directly — baked into the frontend build, so changing it requires `docker compose up --build` again |
@@ -246,7 +246,7 @@ Two more URLs are wired up automatically inside `docker-compose.yml` and don't n
 ### Troubleshooting
 
 - **"Network error" / failed image processing in the browser**: confirm `NEXT_PUBLIC_API_URL` in `.env` is a URL your *browser* (not just the Docker network) can reach, and that you rebuilt (`docker compose up --build`) after changing it — it's compiled into the JS bundle, not read at runtime.
-- **CORS errors in the browser console**: `FRONTEND_ORIGIN` must exactly match the origin you're loading the app from (scheme + host + port, no trailing slash). If you access the app via a different port than `NGINX_PORT`, update `FRONTEND_ORIGIN` to match and restart the backend.
+- **CORS errors in the browser console**: `FRONTEND_ORIGIN` is a comma-separated list (defaults cover both `NGINX_PORT` and `FRONTEND_PORT`); the exact origin you're loading the app from (scheme + host + port, no trailing slash) must be in that list. If you access the app via some other port/domain, add it to `FRONTEND_ORIGIN` and restart the backend.
 - **OTP emails never arrive**: leave `SMTP_USER`/`SMTP_PASS` blank for local dev — OTPs print to `docker compose logs backend` instead.
 - **`docker compose up` fails at `depends_on` / a service stuck "unhealthy"**: check that service's logs (`docker compose logs backend` / `frontend` / `nginx`); the healthchecks require `/api/config` (backend) and `/` (frontend) to respond within the configured `start_period`.
 - **Changes to backend Python code not showing up**: images are built once; re-run `docker compose up --build` after code changes (there's no hot-reload in the production containers by design).

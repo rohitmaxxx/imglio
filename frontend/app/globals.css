@@ -83,6 +83,9 @@ body {
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* The mobile slide-in nav panel sits off-canvas via transform (not display:none),
+       which would otherwise widen the page's scrollable area. */
+    overflow-x: hidden;
 }
 
 ::selection {

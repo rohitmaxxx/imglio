@@ -10,7 +10,14 @@ class Settings:
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = int(os.environ.get("JWT_EXPIRE_MINUTES", 60 * 24 * 7))
 
-    FRONTEND_ORIGIN: str = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000")
+    # Comma-separated list — the Docker Compose stack publishes both the nginx
+    # entrypoint (80) and the frontend container directly (3000), so both are
+    # allowed by default in local dev.
+    FRONTEND_ORIGINS: list[str] = [
+        origin.strip()
+        for origin in os.environ.get("FRONTEND_ORIGIN", "http://localhost,http://localhost:3000").split(",")
+        if origin.strip()
+    ]
 
     ANALYTICS_DB: str = os.environ.get("ANALYTICS_DB", os.path.join(BASE_DIR, "data", "analytics.db"))
 
