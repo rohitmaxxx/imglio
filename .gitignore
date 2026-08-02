@@ -57,7 +57,7 @@ build/
 coverage/
 
 # Static files
-*.env
+# *.env
 *.local
 npm-debug.log*
 yarn-debug.log*
