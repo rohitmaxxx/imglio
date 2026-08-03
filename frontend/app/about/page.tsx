@@ -8,7 +8,6 @@ import FeaturesSection from "@/components/about/FeaturesSection";
 import StatsSection from "@/components/about/StatsSection";
 import HowItWorksSection from "@/components/about/HowItWorksSection";
 import ValuesSection from "@/components/about/ValuesSection";
-import TechStackSection from "@/components/about/TechStackSection";
 import FaqSection from "@/components/about/FaqSection";
 import CtaSection from "@/components/about/CtaSection";
 
@@ -57,7 +56,6 @@ export default function AboutPage() {
       <StatsSection />
       <HowItWorksSection />
       <ValuesSection />
-      <TechStackSection />
       <FaqSection />
       <CtaSection />
     </div>

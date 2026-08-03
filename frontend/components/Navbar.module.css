@@ -207,13 +207,20 @@
     transform: translateY(-7px) rotate(-45deg);
 }
 
+/* Both portalled to <body> (see NavMenu.tsx) — <header> has backdrop-filter, which
+   creates a containing block for position:fixed descendants and would otherwise
+   collapse these to the header's own short box instead of the full viewport. Their
+   `top` is set inline to the header's measured height so the panel drops in flush
+   below the navbar on any screen size. */
 .mobile-nav-backdrop {
     position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.4);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.45);
     -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
-    z-index: 150;
+    z-index: 240;
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--duration-base) ease, visibility var(--duration-base) ease;
@@ -226,24 +233,39 @@
 
 .mobile-nav-panel {
     position: fixed;
-    top: 0;
+    left: 0;
     right: 0;
-    bottom: 0;
-    width: min(300px, 82vw);
+    z-index: 250;
     background: #ffffff;
-    box-shadow: -18px 0 50px rgba(15, 23, 42, 0.18);
-    z-index: 160;
-    padding: 90px 24px 32px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.16);
+    padding: 20px 24px 28px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    transform: translateX(100%);
-    transition: transform var(--duration-base) var(--ease-premium);
+    gap: 18px;
     overflow-y: auto;
+    transform-origin: top center;
+    transform: translateY(-12px) scaleY(0.98);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform var(--duration-base) var(--ease-premium), opacity var(--duration-base) var(--ease-premium), visibility var(--duration-base) var(--ease-premium);
 }
 
 .mobile-nav-panel.open {
-    transform: translateX(0);
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-nav-panel {
+        transition: opacity var(--duration-base) ease, visibility var(--duration-base) ease;
+        transform: none;
+    }
+
+    .mobile-nav-panel.open {
+        transform: none;
+    }
 }
 
 .mobile-nav-panel nav {

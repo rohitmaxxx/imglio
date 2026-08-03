@@ -1,6 +1,6 @@
 import Reveal from "@/components/about/Reveal";
-import toolCardStyles from "@/components/ToolCard.module.css";
-import buttonStyles from "@/components/Button.module.css";
+// import toolCardStyles from "@/components/ToolCard.module.css";
+// import buttonStyles from "@/components/Button.module.css";
 import styles from "@/components/home/HomeHero.module.css";
 
 export default function HomeHero() {
@@ -11,11 +11,11 @@ export default function HomeHero() {
       <div className={`${styles["home-hero-blob"]} ${styles["home-hero-blob-2"]}`} aria-hidden="true" />
       <div className={`${styles["home-hero-blob"]} ${styles["home-hero-blob-3"]}`} aria-hidden="true" />
       <div className={styles["home-hero-inner"]}>
-        <Reveal>
+        {/* <Reveal>
           <span className={styles["home-hero-eyebrow"]}>
             <span className={toolCardStyles["badge-dot"]}></span> PREMIUM IMAGE TOOLKIT
           </span>
-        </Reveal>
+        </Reveal> */}
         <Reveal delay={80}>
           <h1 className={styles["home-hero-title"]}>
             Resize, compress &amp; perfect your images <span className={styles["home-hero-gradient-text"]}>instantly.</span>
@@ -26,7 +26,7 @@ export default function HomeHero() {
             A free, browser-based toolkit for resizing, compressing, cropping, and converting images — no signup, no watermark, nothing ever stored.
           </p>
         </Reveal>
-        <Reveal delay={240}>
+        {/* <Reveal delay={240}>
           <div className={styles["home-hero-actions"]}>
             <a href="#upload-zone" className={`${buttonStyles["btn-resize"]} ${styles["home-hero-cta"]}`}>
               Start Resizing — It&apos;s Free ↓
@@ -35,14 +35,14 @@ export default function HomeHero() {
               Explore all tools ↓
             </a>
           </div>
-        </Reveal>
-        <Reveal delay={320}>
+        </Reveal> */}
+        {/* <Reveal delay={320}>
           <ul className={styles["home-hero-trust"]}>
             <li>No signup required</li>
             <li>Nothing ever stored</li>
             <li>100% free</li>
           </ul>
-        </Reveal>
+        </Reveal> */}
       </div>
     </section>
   );
