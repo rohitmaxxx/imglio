@@ -3,9 +3,20 @@
 .home-hero {
     position: relative;
     overflow: hidden;
-    padding: 76px 24px 64px;
+    padding: 40px 24px 26px;
     text-align: center;
     background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 45%, #f1f5f9 100%);
+}
+
+.home-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.2), rgba(5, 150, 105, 0.2), transparent);
+    pointer-events: none;
 }
 
 .home-hero-dotgrid {
@@ -26,33 +37,33 @@
 }
 
 .home-hero-blob-1 {
-    width: 420px;
-    height: 420px;
+    width: 340px;
+    height: 340px;
     top: -140px;
     left: -80px;
     background: rgba(37, 99, 235, 0.28);
-    opacity: 0.45;
+    opacity: 0.4;
     animation-duration: 14s;
 }
 
 .home-hero-blob-2 {
-    width: 380px;
-    height: 380px;
-    top: -80px;
-    right: -100px;
+    width: 310px;
+    height: 310px;
+    top: -90px;
+    right: -90px;
     background: rgba(16, 185, 129, 0.26);
-    opacity: 0.4;
+    opacity: 0.36;
     animation-duration: 18s;
     animation-delay: -4s;
 }
 
 .home-hero-blob-3 {
-    width: 320px;
-    height: 320px;
-    bottom: -160px;
+    width: 260px;
+    height: 260px;
+    bottom: -140px;
     left: 40%;
     background: rgba(14, 165, 233, 0.22);
-    opacity: 0.35;
+    opacity: 0.3;
     animation-duration: 22s;
     animation-delay: -9s;
 }
@@ -79,27 +90,39 @@
 }
 
 .home-hero-title {
-    font-size: 50px;
-    line-height: 1.12;
+    font-size: 42px;
+    line-height: 1.16;
     font-weight: 800;
-    letter-spacing: -1.5px;
+    letter-spacing: -1.3px;
     color: #0f172a;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .home-hero-gradient-text {
     background: var(--gradient-accent);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
+    color: #3B82F6;
+    animation: heroGradientShift 6s ease-in-out infinite alternate;
+}
+
+@keyframes heroGradientShift {
+    from {
+        background-position: 0% center;
+    }
+    to {
+        background-position: 100% center;
+    }
 }
 
 .home-hero-subtitle {
-    font-size: 18px;
-    line-height: 1.7;
+    font-size: 16.5px;
+    line-height: 1.55;
     color: #475569;
-    max-width: 580px;
-    margin: 0 auto 32px;
+    max-width: 540px;
+    margin: 0 auto 4px;
 }
 
 .home-hero-actions {
@@ -161,27 +184,28 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .home-hero-blob {
+    .home-hero-blob,
+    .home-hero-gradient-text {
         animation: none;
     }
 }
 
 @media (max-width: 900px) {
     .home-hero-title {
-        font-size: 40px;
+        font-size: 34px;
     }
 }
 
 @media (max-width: 640px) {
     .home-hero {
-        padding: 64px 20px 48px;
+        padding: 32px 18px 22px;
     }
 
     .home-hero-title {
-        font-size: 32px;
+        font-size: 28px;
     }
 
     .home-hero-subtitle {
-        font-size: 16px;
+        font-size: 15px;
     }
 }

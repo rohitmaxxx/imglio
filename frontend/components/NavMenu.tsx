@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HeaderAuthActions from "@/components/HeaderAuthActions";
@@ -76,12 +77,32 @@ const MOBILE_LINKS = [
 
 export default function NavMenu({ user }: { user: User | null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const pathname = usePathname();
+
+  // The mobile panel portals to <body> (see below) so it can size itself against the real
+  // viewport instead of the <header>, which has backdrop-filter — that establishes a
+  // containing block for position:fixed descendants and would otherwise collapse the
+  // panel/backdrop to the header's own (short) box instead of the full screen.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close on route change, Escape, or resize past the mobile breakpoint; lock body scroll while open.
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    function measure() {
+      const header = document.querySelector("header");
+      if (header) setHeaderHeight(header.getBoundingClientRect().height);
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -143,33 +164,50 @@ export default function NavMenu({ user }: { user: User | null }) {
         </button>
       </div>
 
-      <div className={`${styles["mobile-nav-backdrop"]}${mobileOpen ? ` ${styles["open"]}` : ""}`} onClick={() => setMobileOpen(false)} aria-hidden="true" />
+      {mounted &&
+        createPortal(
+          <>
+            <div
+              className={`${styles["mobile-nav-backdrop"]}${mobileOpen ? ` ${styles["open"]}` : ""}`}
+              style={{ top: headerHeight }}
+              onClick={() => setMobileOpen(false)}
+              aria-hidden="true"
+            />
 
-      <div id="mobile-nav-panel" className={`${styles["mobile-nav-panel"]}${mobileOpen ? ` ${styles["open"]}` : ""}`} aria-hidden={!mobileOpen}>
-        <nav aria-label="Mobile primary">
-          {MOBILE_LINKS.map((link) => (
-            <Link
-              href={link.href}
-              key={link.label}
-              tabIndex={mobileOpen ? 0 : -1}
-              className={pathname === link.href ? styles["active"] : undefined}
-              aria-current={pathname === link.href ? "page" : undefined}
+            <div
+              id="mobile-nav-panel"
+              className={`${styles["mobile-nav-panel"]}${mobileOpen ? ` ${styles["open"]}` : ""}`}
+              style={{ top: headerHeight, maxHeight: `calc(100vh - ${headerHeight}px)` }}
+              aria-hidden={!mobileOpen}
             >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        {!user && (
-          <div className={styles["mobile-nav-auth"]}>
-            <Link href="/login" className={buttonStyles["btn-login"]} tabIndex={mobileOpen ? 0 : -1}>
-              Login
-            </Link>
-            <Link href="/signup" className={buttonStyles["btn-signup"]} tabIndex={mobileOpen ? 0 : -1}>
-              Signup
-            </Link>
-          </div>
+              <nav aria-label="Mobile primary">
+                {MOBILE_LINKS.map((link) => (
+                  <Link
+                    href={link.href}
+                    key={link.label}
+                    tabIndex={mobileOpen ? 0 : -1}
+                    className={pathname === link.href ? styles["active"] : undefined}
+                    aria-current={pathname === link.href ? "page" : undefined}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              {!user && (
+                <div className={styles["mobile-nav-auth"]}>
+                  <Link href="/login" className={buttonStyles["btn-login"]} tabIndex={mobileOpen ? 0 : -1} onClick={() => setMobileOpen(false)}>
+                    Login
+                  </Link>
+                  <Link href="/signup" className={buttonStyles["btn-signup"]} tabIndex={mobileOpen ? 0 : -1} onClick={() => setMobileOpen(false)}>
+                    Signup
+                  </Link>
+                </div>
+              )}
+            </div>
+          </>,
+          document.body
         )}
-      </div>
     </>
   );
 }
