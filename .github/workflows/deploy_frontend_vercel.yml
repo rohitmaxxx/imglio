@@ -11,9 +11,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: frontend
+    # defaults:
+    #   run:
+    #     working-directory: frontend
 
     steps:
       - name: Checkout Repository
