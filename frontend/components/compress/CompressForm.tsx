@@ -36,7 +36,7 @@ export default function CompressForm() {
         <nav className={toolCardStyles["breadcrumbs"]}>
           <Link href="/">HOME</Link>
           <span className={toolCardStyles["sep"]}>&gt;</span>
-          <a href="#">IMAGE TOOLS</a>
+          <Link href="/#tools">IMAGE TOOLS</Link>
           <span className={toolCardStyles["sep"]}>&gt;</span>
           <span className={toolCardStyles["current"]}>IMAGE COMPRESSOR</span>
         </nav>
@@ -111,7 +111,7 @@ export default function CompressForm() {
 
         {status !== "success" && upload.previewUrl && (
           <div className={formStyles["preview-section"]}>
-            <h3>Preview</h3>
+            <h2>Preview</h2>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={upload.previewUrl} alt="Preview of the selected image" />
           </div>

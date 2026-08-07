@@ -148,6 +148,8 @@ All tunables live in [backend/config/settings.py](backend/config/settings.py):
 | `API_URL` | `http://127.0.0.1:8000` | Same backend URL, used server-side only (auth route handlers) |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Used to build absolute URLs for metadata, Open Graph, robots.txt, sitemap.xml |
 
+> **Production:** `NEXT_PUBLIC_SITE_URL` is baked into the frontend at build time, so it must be the real public domain — `https://pixanzo.com` — not a local address. The root [.env.example](.env.example) (used by `docker-compose.yml`) already defaults to this for production builds.
+
 ## Routes
 
 ### Pages (GET)

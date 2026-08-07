@@ -36,7 +36,7 @@ export default function RotateForm() {
         <nav className={toolCardStyles["breadcrumbs"]}>
           <Link href="/">HOME</Link>
           <span className={toolCardStyles["sep"]}>&gt;</span>
-          <a href="#">IMAGE TOOLS</a>
+          <Link href="/#tools">IMAGE TOOLS</Link>
           <span className={toolCardStyles["sep"]}>&gt;</span>
           <span className={toolCardStyles["current"]}>ROTATE IMAGE</span>
         </nav>
@@ -106,7 +106,7 @@ export default function RotateForm() {
 
         {status !== "success" && upload.previewUrl && (
           <div className={formStyles["preview-section"]}>
-            <h3>Live Preview</h3>
+            <h2>Live Preview</h2>
             <div className={styles["rotate-preview-wrap"]}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={upload.previewUrl} alt="Live rotation preview" style={{ transform: `rotate(${angle}deg)` }} />
