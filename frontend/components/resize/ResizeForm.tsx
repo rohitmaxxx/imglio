@@ -270,7 +270,7 @@ export default function ResizeForm({ defaults, socialPresets }: { defaults: Resi
         <nav className={toolCardStyles["breadcrumbs"]}>
           <Link href="/">HOME</Link>
           <span className={toolCardStyles["sep"]}>&gt;</span>
-          <a href="#">IMAGE TOOLS</a>
+          <Link href="/#tools">IMAGE TOOLS</Link>
           <span className={toolCardStyles["sep"]}>&gt;</span>
           <span className={toolCardStyles["current"]}>IMAGE RESIZER</span>
         </nav>

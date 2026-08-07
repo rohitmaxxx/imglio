@@ -5,7 +5,9 @@ import styles from "@/components/Auth.module.css";
 
 export const metadata: Metadata = {
   title: "Login",
+  description: "Log in to your Pixanzo account.",
   alternates: { canonical: "/login" },
+  robots: { index: false, follow: true },
 };
 
 export default function LoginPage() {
